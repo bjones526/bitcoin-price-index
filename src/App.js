@@ -6,9 +6,11 @@ import { Line, Chart } from 'react-chartjs-2';
 import moment from 'moment';
 import currencies from './supported-currencies.json';
 
-console.log(currencies)
+import {connect} from 'react-redux';
+import {getBitcoinData} from './data/actions';
+import {bindActionCreators} from 'redux';
 
-const REALTIME_BITCOIN_URL = "https://api.coindesk.com/v1/bpi/currentprice.json"
+//const REALTIME_BITCOIN_URL = "https://api.coindesk.com/v1/bpi/currentprice.json"
 
 class App extends Component {
   constructor (props) {
@@ -18,11 +20,15 @@ class App extends Component {
     Chart.defaults.global.defaultFontColor = '#000';
     Chart.defaults.global.defaultFontSize = 16;
 
-    this.state = {historicalData: null, currency: "PHP"}
+    this.state = {currency: "PHP"}
     this.onCurrencySelect = this.onCurrencySelect.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
+    this.props.getData(this.state.currency);
+  }
+
+  /*componentDidMount () {
     this.getBitcoinData()
   }
 
@@ -31,10 +37,10 @@ class App extends Component {
       .then(response => response.json())
       .then(historicalData => this.setState({historicalData}))
       .catch(e => e)
-  }
+  }*/
 
   formatChartData () {
-    const {bpi} = this.state.historicalData
+    const {bpi} = this.props.historicalData
 
     return {
       labels: _.map(_.keys(bpi), date => moment(date).format("ll")),
@@ -65,7 +71,8 @@ class App extends Component {
   }
 
   setCurrency (currency) {
-    this.setState({currency}, this.getBitcoinData)
+    this.setState({currency});
+    this.props.getData(currency);
   }
 
   onCurrencySelect (e) {
@@ -73,7 +80,7 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.historicalData) {
+    if (this.props.historicalData) {
       return (
         <div className="app">
           <Header title="BITCOIN PRICE INDEX" />
@@ -98,9 +105,21 @@ class App extends Component {
         </div>
       )
     }
-
     return null
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    historicalData: state.bitcoin.bitcoinData
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+      getData: bindActionCreators(getBitcoinData, dispatch),
+  }
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

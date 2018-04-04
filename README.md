@@ -1,4 +1,5 @@
-*I used this project as an example during a demonstration on redux. The master branch contains the original project from [mrkjlchvz's bitcorin price index](https://github.com/mrkjlchvz/bitcoin-price-index), and the redux branch shows the same application refactored to work with a redux store.*
+*I used this project as an example during a presentation on redux. The master branch contains the original project from [mrkjlchvz's bitcoin price index](https://github.com/mrkjlchvz/bitcoin-price-index), and the redux branch shows the same application after I refactored it to work with a redux store.*
+---
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
